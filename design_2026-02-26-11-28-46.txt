@@ -1,0 +1,60 @@
+Here is a high-level system architecture diagram for the given requirement:
+
+```
++----------------------------+
+|       API Gateway         |
++----------------------------+
+           |
+           |
++----------------------------+
+|   Rate Limiting Service   |
++----------------------------+
+           |
+           |
++----------------------------+
+|         Redis Cache       |
++----------------------------+
+           |
+           |
++----------------------------+
+|       FastAPI App(s)      |
++----------------------------+
+```
+
+Component Breakdown:
+
+1. **API Gateway**: The entry point for all incoming API requests. It handles tasks like authentication, authorization, and routing.
+
+2. **Rate Limiting Service**: This is the middleware that implements the rate limiting functionality. It interacts with Redis to track the request counts per API key and enforces the rate limiting rules.
+
+3. **Redis Cache**: A distributed, in-memory data store used to store the request count data for each API key.
+
+4. **FastAPI App(s)**: The backend application(s) that expose the actual API endpoints. The Rate Limiting Service sits in front of these applications to protect them from being overwhelmed.
+
+Data Flow:
+
+1. The client makes an API request to the API Gateway.
+2. The API Gateway forwards the request to the Rate Limiting Service.
+3. The Rate Limiting Service checks the request count for the API key in Redis.
+4. If the request count is within the rate limit, the Rate Limiting Service forwards the request to the FastAPI App(s).
+5. The FastAPI App(s) process the request and return the response.
+6. The response is then returned to the client through the API Gateway.
+
+Technology Stack Recommendations:
+
+- **API Gateway**: AWS API Gateway, Kong, Nginx, or similar
+- **Rate Limiting Service**: Python (FastAPI, Flask, or similar) with a Redis client library
+- **Redis Cache**: Redis, AWS ElastiCache, or similar
+- **FastAPI App(s)**: FastAPI, Python
+
+Scalability and Fault Tolerance Considerations:
+
+1. **Scalability**:
+   - Horizontally scale the Rate Limiting Service and FastAPI App(s) by adding more instances behind a load balancer.
+   - Vertically scale the Redis Cache by upgrading to larger instances or using a managed service like AWS ElastiCache.
+   - Implement caching and asynchronous processing to offload work from the Rate Limiting Service.
+
+2. **Fault Tolerance**:
+   - Use a highly available and fault-tolerant Redis solution, such as a managed service or a Redis cluster.
+   - Implement circuit breakers and retries in the Rate Limiting Service to handle failures in the Redis Cache or FastAPI App(s).
+   - Use health checks and monitoring to quickly detect and respond to any issues in the system.
