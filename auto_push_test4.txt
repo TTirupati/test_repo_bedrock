@@ -1,0 +1,20 @@
+import pandas as pd
+
+# Read the input Excel file
+input_file = 'input.xlsx'
+df = pd.read_excel(input_file)
+
+# Filter the data based on status
+pmp_policies = df[df['Status'] == 'PMP']
+terminated_policies = df[df['Status'] == 'Terminated']
+
+# Create separate Excel files
+pmp_file = 'pmp_policies.xlsx'
+terminated_file = 'terminated_policies.xlsx'
+
+pmp_policies.to_excel(pmp_file, index=False)
+terminated_policies.to_excel(terminated_file, index=False)
+
+# Create CSV files
+pmp_policies.to_csv('pmp_policies.csv', index=False)
+terminated_policies.to_csv('terminated_policies.csv', index=False)
