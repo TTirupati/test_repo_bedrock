@@ -1,0 +1,54 @@
+Here is a high-level system architecture diagram for the given requirement:
+
+```
++------------------------------+
+|         API Gateway         |
++------------------------------+
+           |
+           |
++------------------------------+
+|     Rate Limiting Service   |
++------------------------------+
+           |
+           |
++------------------------------+
+|          Redis Cluster      |
++------------------------------+
+           |
+           |
++------------------------------+
+|       FastAPI Instances     |
++------------------------------+
+```
+
+1. **Component Breakdown and Responsibilities**:
+
+   - **API Gateway**: Serves as the entry point for the API requests, handles load balancing, and forwards the requests to the Rate Limiting Service.
+   - **Rate Limiting Service**: Responsible for enforcing the rate limiting policy by interacting with the Redis Cluster to track the request counts per API key.
+   - **Redis Cluster**: Distributed in-memory data store used to store and retrieve the request count data for each API key.
+   - **FastAPI Instances**: The actual API implementation, which receives the requests from the Rate Limiting Service.
+
+2. **Data Flow**:
+   1. The client sends an API request to the API Gateway.
+   2. The API Gateway forwards the request to the Rate Limiting Service.
+   3. The Rate Limiting Service checks the request count for the API key in the Redis Cluster.
+   4. If the request count is within the allowed limit, the Rate Limiting Service forwards the request to the appropriate FastAPI instance.
+   5. The FastAPI instance processes the request and returns the response.
+   6. The response is then sent back to the client through the API Gateway.
+
+3. **Technology Stack Recommendations**:
+   - **API Gateway**: Amazon API Gateway, Kong, Nginx, or similar API gateway solutions.
+   - **Rate Limiting Service**: FastAPI, Python, or any other suitable framework/language.
+   - **Redis Cluster**: Redis, Amazon ElastiCache for Redis, or a managed Redis service.
+   - **FastAPI Instances**: FastAPI, Python.
+
+4. **Scalability and Fault Tolerance Considerations**:
+   - **Scalability**:
+     - Horizontally scale the API Gateway and Rate Limiting Service instances to handle increased traffic.
+     - Vertically scale the Redis Cluster by adding more nodes to handle increased request volumes.
+     - Implement load balancing and auto-scaling mechanisms to dynamically scale the resources based on demand.
+   - **Fault Tolerance**:
+     - Ensure high availability of the API Gateway and Rate Limiting Service by deploying them across multiple Availability Zones or Regions.
+     - Implement a highly available and fault-tolerant Redis Cluster using features like Redis Sentinel or Redis Cluster.
+     - Implement circuit breakers and retries in the communication between the components to handle failures.
+     - Implement health checks and monitoring to quickly detect and respond to any service failures.
